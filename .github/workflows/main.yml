@@ -1,0 +1,21 @@
+name: cc-db-v2 SSH integration
+on: [push]
+
+jobs:
+  update:
+    name: Update Files & Restart
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using ssh key
+      uses: appleboy/ssh-action@v0.1.10
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        port: ${{ secrets.PORT }}
+        script: |
+          cd ~/cc-db-v2
+          git reset --hard origin/main
+          git pull
+          pm2 resurrect
+          pm2 restart DiscordBot
